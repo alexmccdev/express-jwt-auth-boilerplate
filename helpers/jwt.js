@@ -9,7 +9,7 @@ const verifyToken = (req, res, next) => {
         req.user = verified;
         next();
     } catch (err) {
-        return res.status(400).send('Invalid Token');
+        return res.status(401).send('Access Denied');
     }
 };
 

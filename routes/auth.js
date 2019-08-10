@@ -72,11 +72,23 @@ router.post('/login', async (req, res) => {
 
 // Get user if signed in.
 router.get('/user', verifyToken, (req, res) => {
-    User.findById(req.user.id)
-        .select('-password')
-        .then(user => {
-            return res.json(user);
-        });
+    const token = req.header('auth-token');
+    try {
+        User.findById(req.user.id)
+            .select('-password')
+            .then(user => {
+                return res.send({
+                    token,
+                    user: {
+                        id: user.id,
+                        username: user.username,
+                        email: user.email
+                    }
+                });
+            });
+    } catch (err) {
+        return res.status(400).send(err);
+    }
 });
 
 module.exports = router;
