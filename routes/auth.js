@@ -31,8 +31,7 @@ router.post('/register', async (req, res) => {
 
         // Create and assign token
         const token = createToken(savedUser);
-        return res.header('auth-token', token).send({
-            token,
+        return res.cookie('token', token, { httpOnly: true }).send({
             user: {
                 id: savedUser.id,
                 username: savedUser.username,
@@ -60,8 +59,7 @@ router.post('/login', async (req, res) => {
 
     // Create and assign token
     const token = createToken(user);
-    return res.header('auth-token', token).send({
-        token,
+    return res.cookie('token', token, { httpOnly: true }).send({
         user: {
             id: user.id,
             username: user.username,
@@ -72,13 +70,11 @@ router.post('/login', async (req, res) => {
 
 // Get user if signed in.
 router.get('/user', verifyToken, (req, res) => {
-    const token = req.header('auth-token');
     try {
         User.findById(req.user.id)
             .select('-password')
             .then(user => {
                 return res.send({
-                    token,
                     user: {
                         id: user.id,
                         username: user.username,
