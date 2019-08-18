@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const { clearCookie } = require('cookie-parser');
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const { verifyToken, createToken } = require('../helpers/jwt');
@@ -66,6 +67,15 @@ router.post('/login', async (req, res) => {
             email: user.email
         }
     });
+});
+
+// Log user out
+router.get('/logout', (req, res) => {
+    try {
+        return res.clearCookie('token').send(200);
+    } catch (err) {
+        return res.status(500).send('Could not logout');
+    }
 });
 
 // Get user if signed in.
