@@ -1,12 +1,10 @@
-const router = require('express').Router();
-const { clearCookie } = require('cookie-parser');
-const User = require('../models/User');
 const bcrypt = require('bcryptjs');
-const { verifyToken, createToken } = require('../helpers/jwt');
+
+const User = require('../models/User');
+const { createToken } = require('../helpers/jwt');
 const { registerValidation, loginValidation } = require('../helpers/formValidation');
 
-// Register user and sign them in
-router.post('/register', async (req, res) => {
+exports.register = async (req, res) => {
     // Validate before we create user
     const { error } = registerValidation(req.body);
     if (error) return res.status(400).send(error);
@@ -42,10 +40,9 @@ router.post('/register', async (req, res) => {
     } catch (err) {
         return res.status(400).send(err);
     }
-});
+};
 
-// Login User
-router.post('/login', async (req, res) => {
+exports.login = async (req, res) => {
     // Validate before we login user
     const { error } = loginValidation(req.body);
     if (error) return res.status(400).send(error);
@@ -67,19 +64,13 @@ router.post('/login', async (req, res) => {
             email: user.email
         }
     });
-});
+};
 
-// Log user out
-router.get('/logout', (req, res) => {
-    try {
-        return res.clearCookie('token').send(200);
-    } catch (err) {
-        return res.status(500).send('Could not logout');
-    }
-});
+exports.logout = (req, res) => {
+    return res.clearCookie('token').sendStatus(200);
+};
 
-// Get user if signed in.
-router.get('/user', verifyToken, (req, res) => {
+exports.check = (req, res) => {
     try {
         User.findById(req.user.id)
             .select('-password')
@@ -95,6 +86,4 @@ router.get('/user', verifyToken, (req, res) => {
     } catch (err) {
         return res.status(400).send(err);
     }
-});
-
-module.exports = router;
+};
