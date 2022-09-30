@@ -12,7 +12,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@hapi/joi": "^15.1.0",
+        "@hapi/joi": "^15.1.1",
         "bcryptjs": "^2.4.3",
         "concurrently": "^4.1.1",
         "cookie-parser": "^1.4.4",
